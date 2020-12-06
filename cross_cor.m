@@ -1,6 +1,19 @@
 #signal generation
 clear all
-L = 512; #data length
+function p = pulsePower(x)
+    p = sum(x) / length(x);
+end
+
+function [p_frame, frame] = pulsePower_frame(x, n)
+  t = idivide(length(x), n);
+  frame = 0:1:t-1 
+  for i = 0:1:(t-1)
+    p_frame(i+1) = pulsePower(x((i*n + 1) : i*n + n));
+  end 
+end
+
+
+L = 4096; #data length
 F = 200; #sample frequency Hz
 T = 1/F; #sample period
 t = (0:L-1)*T;
@@ -10,7 +23,12 @@ Yi = gauspuls(t, 20,0.3);
 Yi = circshift(Yi', 10);
 Xi = Xi';
 Yi = Yi';
-
+[Pi1, frame1]  = pulsePower_frame(Xi, 16)
+[Pi2, frame2]  = pulsePower_frame(Yi, 16)
+figure(1)
+subplot(2,2,1)
+plot(frame1, Pi1, frame2, Pi2);
+grid on
 #write gaissian pulse datafileID = fopen('exp.txt','w');
 fileXi = fopen('Xi.txt','w');
 fprintf(fileXi,'%6.2fs\n',Xi);
@@ -19,6 +37,7 @@ fclose(fileXi);
 fileYi = fopen('Yi.txt','w');
 fprintf(fileYi,'%6.2fs\n',Yi);
 fclose(fileYi);
+figure(2)
 subplot(2,2,1)
 plot(t, Xi, t, Yi);
 grid on
