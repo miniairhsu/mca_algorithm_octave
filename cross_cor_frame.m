@@ -21,9 +21,9 @@ pkt_size = 128; #must be power of 2
 t = (0:(L*pkt_size)-1)*T; #10ms
 
 %gnerate gassian pulse for simulation
-Xi = gauspuls(t, 5e3,0.2); 
-Xi = circshift(Xi', 2000);
-Yi = gauspuls(t, 7e3,0.4); 
+Xi = gauspuls(t, 5e3,0.2) + rand(1, L*pkt_size)/20;
+Xi = circshift(Xi', 2000) ;
+Yi = gauspuls(t, 7e3,0.4) + rand(1, L*pkt_size)/20; 
 Yi = circshift(Yi', 12000);
 fileXi = fopen('Xi.txt','w');
 fprintf(fileXi,'%6.2fs\n',Xi);
